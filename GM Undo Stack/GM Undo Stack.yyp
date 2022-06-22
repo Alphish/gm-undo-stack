@@ -30,7 +30,7 @@
     {"name":"Windows UWP","path":"options/windowsuap/options_windowsuap.yy",},
     {"name":"operagx","path":"options/operagx/options_operagx.yy",},
   ],
-  "defaultScriptType": 0,
+  "defaultScriptType": 1,
   "isEcma": false,
   "configs": {
     "name": "Default",
