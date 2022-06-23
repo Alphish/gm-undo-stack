@@ -6,7 +6,7 @@
     "path": "folders/Demo/Changes.yy",
   },
   "resourceVersion": "1.0",
-  "name": "class_CellColorChange",
+  "name": "struct_ColumnAddChange",
   "tags": [],
   "resourceType": "GMScript",
 }

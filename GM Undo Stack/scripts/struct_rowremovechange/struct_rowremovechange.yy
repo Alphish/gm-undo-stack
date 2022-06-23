@@ -2,11 +2,11 @@
   "isDnD": false,
   "isCompatibility": false,
   "parent": {
-    "name": "Undo Stack",
-    "path": "folders/Packages/Alphish/Undo Stack.yy",
+    "name": "Changes",
+    "path": "folders/Demo/Changes.yy",
   },
   "resourceVersion": "1.0",
-  "name": "class_UndoStack",
+  "name": "struct_RowRemoveChange",
   "tags": [],
   "resourceType": "GMScript",
 }

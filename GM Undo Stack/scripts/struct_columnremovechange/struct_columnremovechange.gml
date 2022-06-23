@@ -8,12 +8,14 @@ function ColumnRemoveChange(grid) : UndoableChange() constructor {
         array_push(removed_items, target_grid[# width - 1, i]);
     }
     
+	// shrinks the grid by one column, losing its cell colours in the process
     static apply = function() {
         var target_width = ds_grid_width(target_grid) - 1;
         var height = ds_grid_height(target_grid);
         ds_grid_resize(target_grid, target_width, height);
     }
     
+	// regrows the grid, restoring the cell colours from the earlier removed columns
     static undo = function() {
         var target_width = ds_grid_width(target_grid) + 1;
         var height = ds_grid_height(target_grid);

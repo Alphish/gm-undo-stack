@@ -5,8 +5,7 @@ function CellColorChange(grid, cell_x, cell_y, color) : UndoableChange() constru
     target_color = color;
     previous_color = grid.colors[# cell_x, cell_y];
     
-    // prevents performing an action
-    // if the new color is the same as the current one, anyway
+    // prevents change if the new color is the same as the current one
     static can_apply = function() {
         return target_color != previous_color;
     }
