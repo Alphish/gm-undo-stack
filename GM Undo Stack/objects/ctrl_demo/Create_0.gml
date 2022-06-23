@@ -44,7 +44,7 @@ instance_create_layer(button_x, button_y, "Instances", obj_TextButton, {
         
         var change = new ColumnAddChange(grid);
         undo_stack_apply_change(change);
-        undo_stack_begin_move();
+        undo_stack_complete_move();
     }
 });
 instance_create_layer(button_x, button_y + 40, "Instances", obj_TextButton, {
@@ -55,7 +55,7 @@ instance_create_layer(button_x, button_y + 40, "Instances", obj_TextButton, {
         
         var change = new ColumnRemoveChange(grid);
         undo_stack_apply_change(change);
-        undo_stack_begin_move();
+        undo_stack_complete_move();
     }
 });
 instance_create_layer(button_x, button_y + 80, "Instances", obj_TextButton, {
@@ -66,7 +66,7 @@ instance_create_layer(button_x, button_y + 80, "Instances", obj_TextButton, {
         
         var change = new RowAddChange(grid);
         undo_stack_apply_change(change);
-        undo_stack_begin_move();
+        undo_stack_complete_move();
     }
 });
 instance_create_layer(button_x, button_y + 120, "Instances", obj_TextButton, {
@@ -77,7 +77,7 @@ instance_create_layer(button_x, button_y + 120, "Instances", obj_TextButton, {
         
         var change = new RowRemoveChange(grid);
         undo_stack_apply_change(change);
-        undo_stack_begin_move();
+        undo_stack_complete_move();
     }
 });
 

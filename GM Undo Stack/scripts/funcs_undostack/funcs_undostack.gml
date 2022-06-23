@@ -21,6 +21,16 @@ function undo_stack_begin_move() {
     }
 }
 
+/// @func undo_stack_complete_move()
+/// @desc Completes the current undoable move.
+/// @returns {Undefined}
+function undo_stack_complete_move() {
+    // completing the current move and beginning a new one are pretty much equivalent
+    // the function alias is here to better convey the perspective
+    // depending on whether the calling code is wrapping up something or preparing something
+    undo_stack_begin_move();
+}
+
 /// @func undo_stack_apply_change(change)
 /// @desc Applies the given undoable change within the current move.
 /// @param {Struct.UndoableChange} change
