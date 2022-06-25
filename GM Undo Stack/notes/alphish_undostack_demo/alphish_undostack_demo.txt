@@ -1,17 +1,13 @@
-The demo program is a simple painting utility with a resizeable grid of size between 5x5 and 20x20.
-It doesn't really allow saving or loading the drawn picture, its colour choice is very limited and the pencil tool is shoddy,
-but the main point is to showcase the undo/redo functionality anyway.
+The demo program is a simple grid with selectable cells, to which values can be assigned.
+It doesn't really allow saving or loading the grid values and the choice of grid values is pretty limited,
+but it works just fine as a demonstration of the undoable changes concept.
 
 How to use
 ==========
 
-Click on the coloured squares to choose a colour. Choosing a colour to paint with is not an undoable action.
+Click on a grid cell to select it. Hold down Ctrl when clicking to select/deselect multiple cells.
 
-Draw on the grid with the chosen colour by holding down the left mouse button and moving the mouse above the grid.
-All colour changes made within a single mouse hold (with no pressing/releasing in-between) are treated as the same move.
-
-Click on "Add column"/"Remove column"/"Add row"/"Remove row" buttons to resize the grid (newly added cells are gray).
-Adding or removing a single column or row is treated as its own move, independent from the colour changes.
+Click on a cell value ("LRM", "DOL" and the like) to set the value within the selected cells.
 
 Click on "Undo"/"Undo all"/"Redo"/"Redo all" buttons to undo or redo certain moves.
 Additionally, you can use Ctrl+Z and Ctrl+Y shortcuts to undo and redo a single move, respectively.
@@ -19,59 +15,100 @@ Additionally, you can use Ctrl+Z and Ctrl+Y shortcuts to undo and redo a single 
 How it works
 ============
 
-The demo room consists only of a ctrl_Demo instance, which eventually sets up other instances.
+The demonstration program consists of several objects, as well as a struct constructor inheriting from **UndoableChange**.
+The program is run within the rm_Demo room, which itself contains only a ctrl_Demo instance. ctrl_Demo in turn creates the other necessary objects.
 
-Demo objects
-------------
+You can read detailed descriptions of demo objects below.
+You can also go straight to the "Points of interest" section, which lists places in code directly relevant to the Undo Stack system.
 
-In the Create event, the ctrl_Demo instance calls `undo_stack_create()` to make undoable changes usable.
-It also sets up instances of obj_ColorGrid, obj_ColorPicker and obj_TextButton.
-Finally, it calls `undo_stack_destroy()` in its Clean Up event (though moving to another room should suffice as well).
-
-obj_Color grid creates a colours ds_grid in its Create event and destroys the grid in its Clean Up event.
-
-In the Begin Step event, ctrl_Demo checks whether the left mouse button was pressed down, and calls `undo_stack_begin_move()` if it was.
-In the Step event obj_ColorGrid checks if the left mouse button is held over the grid, and if so, it paints a hovered cell with the currently selected colour.
-It does so by creating an instance of ColorCellChange struct (inheriting from UndoableChange), and passes it to the `undo_stack_apply_change(...)` call.
-
-To sum it up:
-
-- pressing the left mouse button anywhere begins a new move (repeated mouse pressed with no undoable changes have no effect)
-- holding the left mouse button and moving mouse over the grid generates a series of undoable cell colour changes
-- as a result, each press-and-hold mouse move creates a single undoable pencil stroke
-
-Each obj_ColorPicker checks for a left mouse button press in its Step Event, and changes the selected colour when clicked.
-It doesn't use any `undo_stack_*` functions, because colour picking doesn't require undoing/redoing in the first place.
-
-Like colour pickers, each obj_TextButton instance checks for the left mouse button press in its Step Event and performs an associated action when clicked.
-The associated actions are defined during creation of obj_TextButton in ctrl_Demo Create event. They are the following:
-
-- "Add column" checks if the colours grid width is below 20; if so, it creates and applies a ColumnAddChange (using `undo_stack_apply_change(...)`)
-- "Remove column" checks if the colours grid width is above 5; if so, it creates and applies a ColumnRemoveChange
-- "Add row" checks if the colours grid height is below 20; if so, it creates and applies a RowAddChange
-- "Remove row" checks if the colours grid height is above 5; if so, it creates and applies a RowRemoveChange
-- "Undo" simply calls `undo_stack_undo()`
-- "Undo all" simply calls `undo_stack_undo_all()`
-- "Redo" simply calls `undo_stack_redo()`
-- "Redo all" simply calls `undo_stack_redo_all()`
-
-Undoable changes
+ctrl_Demo object
 ----------------
 
-In the **Demo >> Changes** folder, various constructors inheriting from UndoableChange are defined.
+ctrl_Demo sets up the whole demonstration program, and also provides the undo/redo functionality via keyboard shortcuts.
 
-A CellColorChange struct takes a ds_grid, a target cell row/column and a new colour as parameters.
-Aside from these, it stores the previous cell colour for a potential undoing operation.
-In its `apply()` method, it sets the value of the target ds_grid cell to the target colour.
-In its `undo()` method, it restores the value of the target ds_grid cell to the previous colour.
+In the Create event, the ctrl_Demo instance calls `undo_stack_create()` to make undoable changes usable.
+It also sets up instances of obj_DemoGrid, obj_DemoGridValue and obj_DemoTextButton.
 
-A ColumnAddChange struct takes a ds_grid as its only parameter. It doesn't store any additional values.
-In its `apply()` method, it resizes the grid to be 1 cell wider. It also makes all the new cells gray.
-In its `undo()` method, it simply resizes the grid to be 1 cell narrower.
+In the Clean Up event it calls `undo_stack_destroy()` (though moving to another room should suffice as well).
 
-A ColumnRemoveChange struct takes a ds_grid as its only parameter.
-Aside from the grid, it stores the cell colours from the column to be removed, for a potential undoing operation.
-In its `apply()` method, it simply resizes the grid to be 1 cell narrower.
-In its `undo()` method, it resizes the grid to be 1 cell wider. It also uses the stored cell colours to paint the newly restored column.
+In the Step event, it checks for Ctrl+Z and Ctrl+Y shortcuts to perform `undo_stack_undo()` and `undo_stack_redo()` calls.
 
-The RowAddChange and RowRemoveChange structs are like their ColumnAddChange/ColumnRemoveChange counterparts, except they change the grid height rather than the width.
+obj_DemoGrid object
+-------------------
+
+obj_DemoGrid stores and displays values set by the user in obj_DemoGridValue object. It also keeps track of cells selection.
+
+In the Create event, it sets up its values and selection grids, as well as a few other additional variables.
+
+In the Clean Up event, it frees memory of the values and selection grids.
+
+In the Step event, it checks for which cell is hovered over.
+Additionally, when the left mouse button is clicked, it changes the selection of the given hover cell.
+If Control key is held down, it just toggles the selection of the hovered cell.
+Otherwise, it clears the selection and only marks the hovered cell as selected.
+
+Finally, in the Draw event it displays grid cells along with their values (selected cells are highlighted).
+
+obj_DemoGridValue object
+------------------------
+
+obj_DemoGridValue changes values of the selected obj_DemoGrid cells when clicked.
+
+In the Create event, it sets up some basic variables.
+Among these, "value" variable can vary between instances, being passed in the extra parameter of the `instance_create_layer(...)` call.
+
+In the Step event, it checks for mouse hover and click.
+On mouse click, it will generate a `GridCellChange` struct instance for each selected cell,
+and try to apply the struct change via `undo_stack_apply_change()`.
+It also calls `undo_stack_begin_move()` before the changes are applied, to make sure the changes aren't applied to a pre-existing move.
+Likewise, it call `undo_stack_complete_move()` after the changes are applied, to make sure the move can't contain any additional changes.
+Thus, the mouse click results in a single self-contained move, that applies one or more changes, depending on how many cells are selected.
+
+In the Draw event, it draws some background and the value to be set in the obj_DemoGrid.
+
+obj_DemoTextButton object
+-------------------------
+
+obj_DemoTextButton performs a designated action when clicked.
+
+In the Create event, it sets up some basic variables.
+Among these, "action" variable can vary between instances, being passed in the extra parameter of the `instance_create_layer(...)` call.
+(same goes for "width" and "height" variables)
+
+In the Step event, it checks for mouse hover and click. On mouse click, it will execute the function stored in the "action" variable.
+
+In the Draw event, it draws some background and button description.
+
+In the demonstration program, the following text buttons are created:
+
+- "Undo" button, executing `undo_stack_undo()` function
+- "Undo all" button, executing `undo_stack_undo_all()` function
+- "Redo" button, executing `undo_stack_redo()` function
+- "Reod all" button, executing `undo_stack_redo_all()` function
+
+GridCellChange struct
+---------------------
+
+GridCellChange struct (defined in the struct_GridCellChange script) is an implementation of the UndoableChange for demonstration purposes.
+
+It accepts a target ds_grid, a column and row of the changed cell and the new value as parameters.
+Additionally, upon creation it stores the previous value of the grid cell for potential undoing operation.
+In its `can_apply()` method, it makes sure the new and previous values aren't the same (otherwise, the change is pointless).
+In its `apply()` method, it sets the new value in the target grid cell.
+In its `undo()` method, it restores the previous value in the target grid cell.
+
+Points of interest
+------------------
+
+Parts of the demonstration program specifically relevant to the Undo Stack system can be found in the following places:
+
+- `undo_stack_create()` is called in the Create event of ctrl_Demo
+- `undo_stack_destroy()` is called in the Clean Up event of ctrl_Demo
+- the "undo"/"undo all"/"redo"/"redo all" functions are associated with the obj_DemoTextButton instances in the Create event of ctrl_Demo
+- `undo_stack_undo()` and `undo_stack_redo()` are also called in the Step event of ctrl_Demo when a keyboard shortcut is pressed
+- `undo_stack_begin_move()` and `undo_stack_complete_move()` are called in the Step event of obj_DemoGridValue
+- `undo_stack_apply_change(...)` is also called in the Step event of obj_DemoGridValue
+- the **UndoableChange** struct is inherited by the **GridCellChange** struct
+- the **GridCellChange** struct is created and consumed in the Step event of obj_DemoGridValue
+
+These places should give a good idea of how Undo Stack system is used in an actual game/program.

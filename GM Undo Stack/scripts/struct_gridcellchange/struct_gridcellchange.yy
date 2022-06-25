@@ -2,11 +2,11 @@
   "isDnD": false,
   "isCompatibility": false,
   "parent": {
-    "name": "Changes",
-    "path": "folders/Demo/Changes.yy",
+    "name": "Demo",
+    "path": "folders/Demo.yy",
   },
   "resourceVersion": "1.0",
-  "name": "struct_RowAddChange",
+  "name": "struct_GridCellChange",
   "tags": [],
   "resourceType": "GMScript",
 }
