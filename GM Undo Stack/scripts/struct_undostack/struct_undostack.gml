@@ -1,6 +1,7 @@
 function UndoStack() constructor {
     moves = [];
     undone_moves = [];
+    max_size = 0;
     begin_move();
     
     /// @func is_empty()
@@ -25,11 +26,15 @@ function UndoStack() constructor {
     /// @param {Struct.UndoableChange} change
     /// @returns {Undefined}
     static apply_change = function(change) {
-        var change_applied = get_last_move().apply_change(change);
+        var last_move = get_last_move();
+        var is_first_move_change = last_move.is_empty();
+        var change_applied = last_move.apply_change(change);
         if (!change_applied)
             return;
         
         discard_redoable_moves();
+        if (is_first_move_change)
+            discard_excess_moves();
     }
     
     /// @func undo_move()
@@ -101,6 +106,16 @@ function UndoStack() constructor {
         begin_move();
     }
     
+    /// @func set_max_size(size)
+    /// @desc Sets the maximum number of remembered undoable moves.
+    /// If the number is 0 or less, the number of moves is unlimited.
+    /// @param {Real} size
+    /// @returns {Undefined}
+    static set_max_size = function(size) {
+        max_size = size;
+        discard_excess_moves();
+    }
+    
     /// @func cleanup()
     /// @desc Frees the manually managed memory associated with the moves in the stack.
     /// @returns {Undefined}
@@ -114,6 +129,27 @@ function UndoStack() constructor {
     /// @returns {Struct.UndoableMove}
     static get_last_move = function() {
         return moves[array_length(moves) - 1];
+    }
+    
+    /// @func discard_excess_moves()
+    /// @desc Discards moves that go beyond the max moves limit.
+    /// @returns {Undefined}
+    static discard_excess_moves = function() {
+        if (max_size <= 0)
+            return;
+        
+        var moves_count = array_length(moves);
+        if (moves[moves_count - 1].is_empty())
+            moves_count--;
+        
+        var discarded_count = moves_count - max_size;
+        if (discarded_count <= 0)
+            return;
+        
+        for (var i = 0; i < discarded_count; i++) {
+            moves[i].cleanup();
+        }
+        array_delete(moves, 0, discarded_count);
     }
     
     /// @func discard_redoable_moves()

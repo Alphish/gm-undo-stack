@@ -76,3 +76,14 @@ function undo_stack_redo_all() {
         inner_stack.redo_all();
     }
 }
+
+/// @func undo_stack_set_max_size(size)
+/// @desc Sets the maximum number of remembered undoable moves.
+/// If the number is 0 or less, the number of moves is unlimited.
+/// @param {Real} size
+/// @returns {Undefined}
+function undo_stack_set_max_size(size) {
+    with (instance_single(ctrl_UndoStack)) {
+        inner_stack.set_max_size(size);
+    }
+}
