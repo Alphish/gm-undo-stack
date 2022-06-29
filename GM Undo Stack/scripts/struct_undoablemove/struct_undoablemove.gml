@@ -52,4 +52,14 @@ function UndoableMove() constructor {
             changes[i].apply();
         }
     }
+    
+    /// @func cleanup()
+    /// @desc Frees the manually managed memory associated with the move changes.
+    /// @returns {Undefined}
+    static cleanup = function() {
+        var changes_count = array_length(changes);
+        for (var i = 0; i < changes_count; i++) {
+            changes[i].cleanup();
+        }
+    }
 }

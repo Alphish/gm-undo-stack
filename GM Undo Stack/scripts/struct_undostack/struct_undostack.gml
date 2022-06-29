@@ -101,6 +101,14 @@ function UndoStack() constructor {
         begin_move();
     }
     
+    /// @func cleanup()
+    /// @desc Frees the manually managed memory associated with the moves in the stack.
+    /// @returns {Undefined}
+    static cleanup = function() {
+        cleanup_moves_array(moves);
+        cleanup_moves_array(undone_moves);
+    }
+    
     /// @func get_last_move()
     /// @desc Gets the current undoable move.
     /// @returns {Struct.UndoableMove}
@@ -112,6 +120,18 @@ function UndoStack() constructor {
     /// @desc Discards all the undone moves.
     /// @returns {Undefined}
     static discard_redoable_moves = function() {
+        cleanup_moves_array(undone_moves);
         undone_moves = [];
+    }
+    
+    /// @func cleanup_moves_array(moves_array)
+    /// @desc Frees the memory associated with the given moves.
+    /// @param {Array<Struct.UndoableMove>} moves_array
+    /// @returns {Undefined}
+    static cleanup_moves_array = function(moves_array) {
+        var moves_count = array_length(moves_array);
+        for (var i = 0; i < moves_count; i++) {
+            moves_array[i].cleanup();
+        }
     }
 }
