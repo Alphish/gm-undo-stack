@@ -25,8 +25,11 @@ function UndoStack() constructor {
     /// @param {Struct.UndoableChange} change
     /// @returns {Undefined}
     static apply_change = function(change) {
-        get_last_move().apply_change(change);
-        undone_moves = [];
+        var change_applied = get_last_move().apply_change(change);
+        if (!change_applied)
+            return;
+        
+        discard_redoable_moves();
     }
     
     /// @func undo_move()
@@ -103,5 +106,12 @@ function UndoStack() constructor {
     /// @returns {Struct.UndoableMove}
     static get_last_move = function() {
         return moves[array_length(moves) - 1];
+    }
+    
+    /// @func discard_redoable_moves()
+    /// @desc Discards all the undone moves.
+    /// @returns {Undefined}
+    static discard_redoable_moves = function() {
+        undone_moves = [];
     }
 }

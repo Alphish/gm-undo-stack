@@ -12,16 +12,17 @@ function UndoableMove() constructor {
     /// @func apply_change(change)
     /// @desc Tries applying the given change, if possible.
     /// @param {Struct.UndoableChange} change
-    /// @returns {Undefined}
+    /// @returns {Bool}
     static apply_change = function(change) {
         if (undone)
             throw "Cannot apply a change on a move that has already been undone.";
         
         if (!change.can_apply())
-            return;
+            return false;
         
         change.apply();
         array_push(changes, change);
+        return true;
     }
     
     /// @func undo()
