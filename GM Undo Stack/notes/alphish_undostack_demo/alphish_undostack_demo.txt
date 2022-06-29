@@ -11,6 +11,7 @@ Click on a cell value ("LRM", "DOL" and the like) to set the value within the se
 
 Click on "Undo"/"Undo all"/"Redo"/"Redo all" buttons to undo or redo certain moves.
 Additionally, you can use Ctrl+Z and Ctrl+Y shortcuts to undo and redo a single move, respectively.
+You can only undo up to 10 recent moves; the information for earlier moves is discarded.
 
 How it works
 ============
@@ -27,7 +28,8 @@ ctrl_Demo object
 ctrl_Demo sets up the whole demonstration program, and also provides the undo/redo functionality via keyboard shortcuts.
 
 In the Create event, the ctrl_Demo instance calls `undo_stack_create()` to make undoable changes usable.
-It also sets up instances of obj_DemoGrid, obj_DemoGridValue and obj_DemoTextButton.
+It also calls `undo_stack_set_max_size(10)` to store only up to 10 non-empty undoable moves.
+Finally, it sets up instances of obj_DemoGrid, obj_DemoGridValue and obj_DemoTextButton.
 
 In the Clean Up event it calls `undo_stack_destroy()` (though moving to another room should suffice as well).
 
@@ -102,7 +104,7 @@ Points of interest
 
 Parts of the demonstration program specifically relevant to the Undo Stack system can be found in the following places:
 
-- `undo_stack_create()` is called in the Create event of ctrl_Demo
+- `undo_stack_create()` and `undo_stack_set_max_size(...)` are called in the Create event of ctrl_Demo
 - `undo_stack_destroy()` is called in the Clean Up event of ctrl_Demo
 - the "undo"/"undo all"/"redo"/"redo all" functions are associated with the obj_DemoTextButton instances in the Create event of ctrl_Demo
 - `undo_stack_undo()` and `undo_stack_redo()` are also called in the Step event of ctrl_Demo when a keyboard shortcut is pressed
