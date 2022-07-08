@@ -1,5 +1,3 @@
-color_picked = c_gray;
-
 // IMPORTANT: An instance of ctrl_UndoStack must be created
 // in order to use other undo_stack_* functions
 undo_stack_create();
