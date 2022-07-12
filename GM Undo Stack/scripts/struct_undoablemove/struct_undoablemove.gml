@@ -1,3 +1,5 @@
+/// @func UndoableMove()
+/// @desc Constructor for an undoable move, gathering one or more undoable changes.
 function UndoableMove() constructor {
     changes = [];
     undone = false;

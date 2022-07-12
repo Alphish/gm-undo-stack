@@ -1,3 +1,5 @@
+/// @func UndoStack()
+/// @desc Constructor for the undo stack manager.
 function UndoStack() constructor {
     moves = [];
     undone_moves = [];
@@ -124,16 +126,14 @@ function UndoStack() constructor {
         cleanup_moves_array(undone_moves);
     }
     
-    /// @func get_last_move()
-    /// @desc Gets the current undoable move.
-    /// @returns {Struct.UndoableMove}
+    /// @ignore
+    /// Internal: Gets the current undoable move.
     static get_last_move = function() {
         return moves[array_length(moves) - 1];
     }
     
-    /// @func discard_excess_moves()
-    /// @desc Discards moves that go beyond the max moves limit.
-    /// @returns {Undefined}
+    /// @ignore
+    /// Internal: Discards moves that go beyond the max moves limit.
     static discard_excess_moves = function() {
         if (max_size <= 0)
             return;
@@ -152,18 +152,15 @@ function UndoStack() constructor {
         array_delete(moves, 0, discarded_count);
     }
     
-    /// @func discard_redoable_moves()
-    /// @desc Discards all the undone moves.
-    /// @returns {Undefined}
+    /// @ignore
+    /// Internal: Discards all the undone moves.
     static discard_redoable_moves = function() {
         cleanup_moves_array(undone_moves);
         undone_moves = [];
     }
     
-    /// @func cleanup_moves_array(moves_array)
-    /// @desc Frees the memory associated with the given moves.
-    /// @param {Array<Struct.UndoableMove>} moves_array
-    /// @returns {Undefined}
+    /// @ignore
+    /// Internal: frees the memory associated with the given moves.
     static cleanup_moves_array = function(moves_array) {
         var moves_count = array_length(moves_array);
         for (var i = 0; i < moves_count; i++) {

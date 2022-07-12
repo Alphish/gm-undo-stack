@@ -1,3 +1,6 @@
+/// @func UndoableChange()
+/// @desc Base constructor for an undoable change.
+///       It should never be created directly, but inherited instead.
 function UndoableChange() constructor {
     
     /// @func can_apply()
