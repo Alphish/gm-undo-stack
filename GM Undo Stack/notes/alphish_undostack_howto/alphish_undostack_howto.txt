@@ -1,27 +1,19 @@
-Installation
-============
-
-To add the Undo Stack library to your project, import both the **Packages >> Alphish >> Common** and **Packages >> Alphish >> Undo Stack** folders.
-(the Common folder includes utility functions used within the Undo Stack code)
-
-Additionally, you can import the **Demo** folder to see an example use case of the Undo Stack library.
-You can read more about a demonstration program in the "Alphish_UndoStack_Demo" note attached to the folder.
-
 General concepts
 ================
 
 The Undo Stack library allows setting up the undo/redo actions for your game/program.
-It keeps track of **moves** consisting of one or more **changes**, organised into the **undo stack**.
+It keeps track of **moves** consisting of one or more **changes** to the **core game state**.
+The moves are organised into the **undo stack**.
+
+The **core game state** relates to things like elements positions, health and mana variables etc.
+Variables related to presentation (sprite images, tweens, etc.) don't need to be controlled by the undoable changes,
+as long as the presentation can be re-synchronised with the core game state (recalculating sprite images, instances cancelling their tweens and going back to old positions etc.).
+For the undo functionality to work properly, *every single change to the core game state should be performed via a corresponding undoable change!*
 
 An **undoable change** is a simple change of the core game state, that can be either applied or undone.
 Undoing a change must restore the core game state to how it was before the change was applied.
 E.g. if a change adds 1 to health, undoing should subtract 1 from health.
 If a change replaces a digit 2 with 7, undoing the change should replace the 7 back with 2.
-
-The **core game state** affected by undoable changes relates to things like elements positions, health and mana variables etc.
-Variables related to presentation (sprite images, tweens, etc.) don't need to be controlled by the undoable changes,
-as long as the presentation can be re-synchronised with the core game state (recalculating sprite images, instances cancelling their tweens and going back to old positions etc.).
-For the undo functionality to work properly, *every single change to the core game state should be performed via a corresponding undoable change!*
 
 An **undoable move** is a set of one or more changes, usually related to a single input or a quick sequence of inputs.
 For example, when the player moves right, they can apply a simple "character X increases by 1" change.
