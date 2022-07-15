@@ -13,7 +13,7 @@ The package is suitable for games/applications with relatively simple changes - 
 Installation
 ============
 
-You can get the package from the GameMaker Marketplace or from my itch.io page.
+You can get the package from the [GameMaker Marketplace](https://marketplace.yoyogames.com/assets/11052/undo_stack) or from my [itch.io page](https://alphish-creature.itch.io/gm-undo-stack).
 
 To add the Undo Stack library to your project, import both the **Packages >> Alphish >> Common** and **Packages >> Alphish >> Undo Stack** folders (the Common folder includes utility functions used within the Undo Stack code).
 Within the Undo Stack folder you can find the **Alphish_UndoStack_HowTo** note which explains the Undo Stack functionality and code structure in more detail.
