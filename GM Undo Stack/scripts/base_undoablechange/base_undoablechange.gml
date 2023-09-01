@@ -14,7 +14,7 @@ function UndoableChange() constructor {
     /// @desc Applies the given undoable change.
     /// @returns {Undefined}
     static apply = function() {
-        throw not_implemented_exception("perform()");
+        throw not_implemented_exception("apply()");
     }
     
     /// @func undo()
